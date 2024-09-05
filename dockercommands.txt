@@ -1,0 +1,213 @@
+Certainly! Here’s a concise list of essential Docker commands, each demonstrated with an example using an Nginx server. This should help you get started with Docker operations related to building images, managing containers, and other common tasks.
+
+### 1. **Building a Docker Image**
+
+**Command:**
+```sh
+docker build -t <image_name>:<tag> <path_to_dockerfile>
+```
+
+**Example:**
+```sh
+docker build -t my-nginx:latest .
+```
+
+**Explanation:** This command builds a Docker image named `my-nginx` with the `latest` tag from the Dockerfile in the current directory (`.`).
+
+### 2. **Listing Docker Images**
+
+**Command:**
+```sh
+docker images
+```
+
+**Example:**
+```sh
+docker images
+```
+
+**Explanation:** Lists all Docker images available on your local system.
+
+### 3. **Running a Docker Container**
+
+**Command:**
+```sh
+docker run -d -p <host_port>:<container_port> --name <container_name> <image_name>:<tag>
+```
+
+**Example:**
+```sh
+docker run -d -p 8080:80 --name my-nginx-container my-nginx:latest
+```
+
+**Explanation:** Runs a container from the `my-nginx` image in detached mode (`-d`), maps port 80 in the container to port 8080 on the host, and names the container `my-nginx-container`.
+
+### 4. **Listing Docker Containers**
+
+**Command:**
+```sh
+docker ps
+```
+
+**Example:**
+```sh
+docker ps
+```
+
+**Explanation:** Lists all currently running Docker containers.
+
+### 5. **Stopping a Docker Container**
+
+**Command:**
+```sh
+docker stop <container_name_or_id>
+```
+
+**Example:**
+```sh
+docker stop my-nginx-container
+```
+
+**Explanation:** Stops the running container named `my-nginx-container`.
+
+### 6. **Removing a Docker Container**
+
+**Command:**
+```sh
+docker rm <container_name_or_id>
+```
+
+**Example:**
+```sh
+docker rm my-nginx-container
+```
+
+**Explanation:** Removes the stopped container named `my-nginx-container`.
+
+### 7. **Removing a Docker Image**
+
+**Command:**
+```sh
+docker rmi <image_name>:<tag>
+```
+
+**Example:**
+```sh
+docker rmi my-nginx:latest
+```
+
+**Explanation:** Removes the Docker image named `my-nginx` with the `latest` tag.
+
+### 8. **Viewing Container Logs**
+
+**Command:**
+```sh
+docker logs <container_name_or_id>
+```
+
+**Example:**
+```sh
+docker logs my-nginx-container
+```
+
+**Explanation:** Displays the logs for the container named `my-nginx-container`.
+
+### 9. **Executing a Command in a Running Container**
+
+**Command:**
+```sh
+docker exec -it <container_name_or_id> <command>
+```
+
+**Example:**
+```sh
+docker exec -it my-nginx-container /bin/bash
+```
+
+**Explanation:** Opens an interactive terminal (`-it`) inside the running container named `my-nginx-container` and starts a Bash shell.
+
+### 10. **Inspecting a Container**
+
+**Command:**
+```sh
+docker inspect <container_name_or_id>
+```
+
+**Example:**
+```sh
+docker inspect my-nginx-container
+```
+
+**Explanation:** Provides detailed information about the container named `my-nginx-container`.
+
+### 11. **Viewing Docker System Information**
+
+**Command:**
+```sh
+docker info
+```
+
+**Example:**
+```sh
+docker info
+```
+
+**Explanation:** Displays detailed information about the Docker installation and its environment.
+
+### 12. **Removing Unused Docker Resources**
+
+**Command:**
+```sh
+docker system prune
+```
+
+**Example:**
+```sh
+docker system prune
+```
+
+**Explanation:** Removes unused Docker data (containers, images, volumes, etc.) to free up space.
+
+### 13. **Pulling an Image from Docker Hub**
+
+**Command:**
+```sh
+docker pull <image_name>:<tag>
+```
+
+**Example:**
+```sh
+docker pull nginx:latest
+```
+
+**Explanation:** Downloads the `nginx` image with the `latest` tag from Docker Hub.
+
+### 14. **Tagging a Docker Image**
+
+**Command:**
+```sh
+docker tag <source_image>:<source_tag> <target_image>:<target_tag>
+```
+
+**Example:**
+```sh
+docker tag my-nginx:latest my-nginx:1.0
+```
+
+**Explanation:** Tags the `my-nginx:latest` image with a new tag `1.0`.
+
+### 15. **Pushing an Image to Docker Hub**
+
+**Command:**
+```sh
+docker push <image_name>:<tag>
+```
+
+**Example:**
+```sh
+docker push my-nginx:latest
+```
+
+**Explanation:** Uploads the `my-nginx:latest` image to Docker Hub.
+
+Feel free to copy these commands and adapt them as needed for your Docker workflow. If you have any more questions or need further details, just let me know!

@@ -1,0 +1,16 @@
+services:
+  keycloak:
+    container_name: keycloak
+    environment:
+      - KEYCLOAK_ADMIN=admin
+      - KEYCLOAK_ADMIN_PASSWORD=admin
+    image: quay.io/keycloak/keycloak:21.0.1
+    ports:
+      - "9090:8080" # Maps port 8080 inside the container to port 9090 on the host
+    restart: unless-stopped
+    volumes:
+      - keycloak_data:/opt/keycloak/data
+
+volumes:
+  keycloak_data:
+    name: keycloak_keycloak_data

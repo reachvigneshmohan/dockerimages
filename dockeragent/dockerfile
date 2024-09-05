@@ -1,0 +1,24 @@
+# Use the official Ubuntu image from the Docker Hub
+FROM ubuntu:22.04
+
+# Install essential packages and tools
+RUN apt-get update && \
+    apt-get install -y \
+        openjdk-11-jdk \
+        curl \
+        git \
+        vim \
+        sudo \
+        build-essential
+
+# Set up a user for Jenkins
+RUN useradd -ms /bin/bash jenkins && \
+    echo 'jenkins:jenkins' | chpasswd && \
+    adduser jenkins sudo
+
+# Switch to the jenkins user
+USER jenkins
+WORKDIR /home/jenkins
+
+# Set the default command to start a shell
+CMD ["/bin/bash"]
