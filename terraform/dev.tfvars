@@ -2,7 +2,7 @@
 
 # AWS region
 variable "aws_region" {
-  default = "us-east-1"
+  default = "eu-north-1"
 }
 
 # CIDR blocks
@@ -20,7 +20,7 @@ variable "private_subnet_cidr" {
 
 # Availability Zone
 variable "aws_availability_zone" {
-  default = "us-east-1a"
+  default = "eu-north-1a"
 }
 
 # Project-specific variables
