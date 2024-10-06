@@ -17,15 +17,24 @@ pipeline {
         }
         stage('Terraform Init') {
             steps {
+                withCredentials([[
+                    $class: 'AmazonWebServicesCredentialsBinding', 
+                    credentialsId: 'terraform-aws-credentials'  // The credentials ID you set in Jenkins
+                ]]) {
                 script {
                     // Initialize Terraform
                     sh 'terraform init'
                 }
             }
         }
+        }
 
         stage('Terraform Plan') {
             steps {
+                withCredentials([[
+                    $class: 'AmazonWebServicesCredentialsBinding', 
+                    credentialsId: 'terraform-aws-credentials'  // The credentials ID you set in Jenkins
+                ]]) {
                 script {
                     // Generate the Terraform plan using the specified vars.tf and main.tf
                     // If vars.tf is in the same directory as main.tf, just use -var-file
@@ -36,9 +45,14 @@ pipeline {
                 }
             }
         }
+        }
 
         stage('Save Plan to S3') {
             steps {
+                withCredentials([[
+                    $class: 'AmazonWebServicesCredentialsBinding', 
+                    credentialsId: 'terraform-aws-credentials'  // The credentials ID you set in Jenkins
+                ]]) {
                 script {
                     // Upload the human-readable plan to S3
                     sh """
@@ -46,6 +60,7 @@ pipeline {
                     """
                 }
             }
+        }
         }
 
         stage('Manual Approval') {
@@ -57,6 +72,10 @@ pipeline {
 
         stage('Terraform Apply') {
             steps {
+                withCredentials([[
+                    $class: 'AmazonWebServicesCredentialsBinding', 
+                    credentialsId: 'terraform-aws-credentials'  // The credentials ID you set in Jenkins
+                ]]) {
                 script {
                     // Apply the Terraform plan using the binary plan file
                     // terraform apply ${TF_PLAN_FILE}
@@ -66,6 +85,7 @@ pipeline {
                 }
             }
         }
+    }
     }
 
     post {
