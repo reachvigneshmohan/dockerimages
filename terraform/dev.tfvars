@@ -1,37 +1,19 @@
-# Variables for the development environment
+# dev.tfvars
+# variables.tf: Declares variables that will be used in your Terraform configurations. This file is generic and doesn't contain any specific values for environments like dev or prod.
+# dev.tfvars: Contains values for the dev environment that will override the declared variables in variables.tf. You can create similar .tfvars files for other environments (e.g., prod.tfvars, staging.tfvars).
 
 # AWS region
-variable "aws_region" {
-  default = "eu-north-1"
-}
+aws_region = "eu-north-1"
 
 # CIDR blocks
-variable "vpc_cidr" {
-  default = "10.0.0.0/16"
-}
-
-variable "public_subnet_cidr" {
-  default = "10.0.0.0/22"
-}
-
-variable "private_subnet_cidr" {
-  default = "10.0.4.0/22"
-}
+vpc_cidr = "10.0.0.0/16"
+public_subnet_cidr = "10.0.0.0/22"
+private_subnet_cidr = "10.0.4.0/22"
 
 # Availability Zone
-variable "aws_availability_zone" {
-  default = "eu-north-1a"
-}
+aws_availability_zone = "eu-north-1a"
 
 # Project-specific variables
-variable "project_name" {
-  default = "tracer"
-}
-
-variable "environment" {
-  default = "dev"
-}
-
-variable "identify" {
-  default = "tracer-dev"
-}
+project_name = "tracer"
+environment = "dev"
+identify = "tracer-dev"
