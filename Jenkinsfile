@@ -10,26 +10,6 @@ pipeline {
         TF_MAIN_FILE = 'terraform/main.tf'                     // Path to your main.tf file
     }
     stages {
-        stage('Install Terraform') {
-            steps {
-                script {
-                    // Check if Terraform is installed and install it if not
-                    sh """
-                    if ! command -v terraform &> /dev/null
-                    then
-                        echo "Terraform not found. Installing Terraform..."
-                        curl -o terraform.zip https://releases.hashicorp.com/terraform/${TERRAFORM_VERSION}/terraform_${TERRAFORM_VERSION}_linux_amd64.zip
-                        unzip terraform.zip
-                        sudo mv terraform /usr/local/bin/
-                        rm terraform.zip
-                    else
-                        echo "Terraform is already installed."
-                    fi
-                    terraform --version
-                    """
-                }
-            }
-        }
         stage('Checkout') {
             steps { 
                 git branch: "${env.BRANCH_NAME}", credentialsId: '2159dd14-bf38-4ba6-8766-f73495d80fac', url: 'https://github.com/reachvigneshmohan/dockerimages.git'
