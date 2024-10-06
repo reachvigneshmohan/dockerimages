@@ -1,33 +1,45 @@
 pipeline {
     agent any
-    
-    environment {
-        TF_WORKSPACE = 'dev'                             // Terraform workspace
-        S3_BUCKET = 'your-s3-bucket-name'                // Replace with your S3 bucket name
-        AWS_REGION = 'us-east-1'                         // Replace with your AWS region
-        TF_PLAN_FILE = 'tfplan.out'                      // File to store the Terraform plan output
-        TF_PLAN_TEXT_FILE = 'tfplan.txt'                 // Human-readable plan file
-        TFSTATE_BUCKET = 'your-tfstate-s3-bucket'        // S3 bucket for storing tfstate
-        TFSTATE_KEY = 'terraform/state/terraform.tfstate' // S3 key for the tfstate file
-    }
 
+    environment {
+        S3_BUCKET = 'tracerresources'            // Replace with your S3 bucket name
+        AWS_REGION = 'eu-north-1'                     // Replace with your AWS region
+        TF_PLAN_FILE = 'tfplan.out'                  // Binary plan file name
+        TF_PLAN_TEXT_FILE = 'tfplan.txt'             // Human-readable plan output
+        TF_VAR_FILE = 'terraform/dev.tfvars'                      // Path to your vars.tf file
+        TF_MAIN_FILE = 'terraform/main.tf'                     // Path to your main.tf file
+    }
     stages {
-        stage('Checkout Repository') {
+        stage('Install Terraform') {
             steps {
-                // Checkout your repository containing the Terraform configuration
-                git branch: 'main', url: 'git@github.com:your-repo/your-terraform-repo.git'
+                script {
+                    // Check if Terraform is installed and install it if not
+                    sh """
+                    if ! command -v terraform &> /dev/null
+                    then
+                        echo "Terraform not found. Installing Terraform..."
+                        curl -o terraform.zip https://releases.hashicorp.com/terraform/${TERRAFORM_VERSION}/terraform_${TERRAFORM_VERSION}_linux_amd64.zip
+                        unzip terraform.zip
+                        sudo mv terraform /usr/local/bin/
+                        rm terraform.zip
+                    else
+                        echo "Terraform is already installed."
+                    fi
+                    terraform --version
+                    """
+                }
             }
         }
-
+        stage('Checkout') {
+            steps { 
+                git branch: "${env.BRANCH_NAME}", credentialsId: '2159dd14-bf38-4ba6-8766-f73495d80fac', url: 'https://github.com/reachvigneshmohan/dockerimages.git'
+            }
+        }
         stage('Terraform Init') {
             steps {
                 script {
-                    sh """
-                    terraform init \
-                      -backend-config="bucket=${TFSTATE_BUCKET}" \
-                      -backend-config="key=${TFSTATE_KEY}" \
-                      -backend-config="region=${AWS_REGION}"
-                    """
+                    // Initialize Terraform
+                    sh 'terraform init'
                 }
             }
         }
@@ -35,19 +47,20 @@ pipeline {
         stage('Terraform Plan') {
             steps {
                 script {
-                    // Generate the Terraform plan and save it to a file (binary plan for apply)
+                    // Generate the Terraform plan using the specified vars.tf and main.tf
+                    // If vars.tf is in the same directory as main.tf, just use -var-file
                     sh """
-                    terraform plan -out=${TF_PLAN_FILE} | tee ${TF_PLAN_TEXT_FILE}
+                    terraform plan -out=${TF_PLAN_FILE} -var-file=${TF_VAR_FILE} | tee ${TF_PLAN_TEXT_FILE}
                     """
                     // The `tee` command displays the plan in the logs and saves it to a human-readable file (tfplan.txt)
                 }
             }
         }
 
-        stage('Save Plan Output to S3') {
+        stage('Save Plan to S3') {
             steps {
                 script {
-                    // Copy the human-readable Terraform plan file (tfplan.txt) to S3
+                    // Upload the human-readable plan to S3
                     sh """
                     aws s3 cp ${TF_PLAN_TEXT_FILE} s3://${S3_BUCKET}/plans/${TF_PLAN_TEXT_FILE} --region ${AWS_REGION}
                     """
@@ -65,9 +78,10 @@ pipeline {
         stage('Terraform Apply') {
             steps {
                 script {
-                    // Apply the Terraform plan from the saved binary plan file (tfplan.out)
+                    // Apply the Terraform plan using the binary plan file
+                    // terraform apply ${TF_PLAN_FILE}
                     sh """
-                    terraform apply ${TF_PLAN_FILE}
+                    terraform --version
                     """
                 }
             }
